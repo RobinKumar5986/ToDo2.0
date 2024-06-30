@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -48,10 +49,42 @@ public class DbHelperClass extends SQLiteOpenHelper {
     public Cursor getAllData(){
         SQLiteDatabase db=this.getWritableDatabase();
         String selectingAllQuery="select * from "+TABLE_NAME +" order by ID desc";
-        Cursor cursor=db.rawQuery(selectingAllQuery,null);
-        return cursor;
+        return db.rawQuery(selectingAllQuery,null);
     }//end of retrieving function
     //-------------------------------------------//
+    //-----FUNCTION FOR UPDATING ------//
+    public void updateStatusOfTask(int status,int id){
+        SQLiteDatabase db=this.getWritableDatabase();
+        ContentValues values=new ContentValues();
+        values.put("STATUS",status);
+        float error = db.update(TABLE_NAME,values,"ID=?", new String[]{id+""});
+        if(error==-1){
+            Log.d("Error code :" ,-1+"");
+        }else{
+            Log.d("Error code :" ,"one");
+        }
+    }//end of status updating function
 
+    public void updateTask(int id, String task) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("TASK", task);
+        int rowsAffected = db.update(TABLE_NAME, values, "ID=?", new String[]{String.valueOf(id)});
+        if (rowsAffected == 1) {
+            Log.d("Update Status:", "Task updated successfully");
+        } else {
+            Log.d("Update Status:", "Failed to update task");
+        }
+    }
+    //--------Deletion Of the Task----------//
+    public void deleteTask(int id){
+        SQLiteDatabase db=this.getWritableDatabase();
+        long errorCode=db.delete(TABLE_NAME,"ID=?",new String[]{id+""});
+        if(errorCode==-1){
+            Log.d("Error code :" ,"Deletion Error");
+        }else{
+            Log.d("Error code :" ,"Deletion Successful");
+        }
+    }
 
 }
